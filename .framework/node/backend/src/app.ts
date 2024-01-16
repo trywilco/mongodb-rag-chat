@@ -87,7 +87,7 @@ ${originalUserMessage}
   };
 };
 
-const createApp = async () => {
+const setupApp = async () => {
   const envConfig = await getEnvConfigInstance()
   const openAiClient = new OpenAIClient(
     envConfig.baseUrl,
@@ -150,7 +150,7 @@ const PORT = process.env.PORT || 3000;
 const startServer = async () => {
   logger.info("Starting server...");
 
-  const appConfig = await createApp();
+  const appConfig = await setupApp();
   const app = await makeApp(appConfig);
   const server = app.listen(PORT, () => {
     logger.info(`Server listening on port: ${PORT}`);
