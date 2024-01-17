@@ -22,7 +22,7 @@ import {
   EmbedResult,
 } from "mongodb-chatbot-server";
 
-import {getEnvConfigInstance} from "./config";
+import { getEnvConfigInstance, preConfigMessage } from "./config";
 
 const MONGODB_CONNECTION_URI: string = process.env
   .MONGODB_CONNECTION_URI as string;
@@ -88,7 +88,7 @@ ${originalUserMessage}
 };
 
 const setupApp = async () => {
-  const envConfig = await getEnvConfigInstance()
+  const envConfig = await getEnvConfigInstance();
   const openAiClient = new OpenAIClient(
     envConfig.baseUrl,
     new AzureKeyCredential(envConfig.apiKey)
@@ -168,6 +168,10 @@ const startServer = async () => {
 };
 
 try {
+  if (!process.env.MONGODB_CONNECTION_URI) {
+    preConfigMessage(logger);
+    process.exit(0);
+  }
   startServer();
 } catch (e) {
   logger.error(`Fatal error: ${e}`);
