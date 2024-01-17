@@ -58,7 +58,9 @@ export const getEnvConfigInstance = async () => {
 };
 
 export const preConfigMessage = (logger) => {
-  logger.info("===============================================")
-  logger.info("You are now ready to continue to the next task!")
-  logger.info("===============================================")
+  logger.info("=============================================================================")
+  logger.info("               You are now READY to continue to the next task!               ")
+  logger.info("Enviornemt variable MONGODB_CONNECTION_URI is missing and will be added later")
+  logger.info("=============================================================================")
 }
+
