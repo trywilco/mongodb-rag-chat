@@ -43,6 +43,7 @@ services:
     environment:
       - GITHUB_TOKEN=$GITHUB_TOKEN
       - CODESPACE_NAME=$CODESPACE_NAME
+      - APP_NAME="Mogno RAG Chat"
     depends_on:
       - "anythink-frontend-react"
 
