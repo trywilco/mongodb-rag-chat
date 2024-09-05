@@ -5,7 +5,6 @@ import {
   MongoClient,
   makeMongoDbEmbeddedContentStore,
   makeMongoDbConversationsService,
-  makeDataStreamer,
   AppConfig,
   makeOpenAiChatLlm,
   SystemPrompt,
@@ -128,17 +127,15 @@ const setupApp = async () => {
 
   const conversations = makeMongoDbConversationsService(
     mongodb.db(MONGODB_DATABASE_NAME),
-    systemPrompt
   );
 
-  const dataStreamer = makeDataStreamer();
 
   const appConfig: AppConfig = {
     conversationsRouterConfig: {
-      dataStreamer,
       llm,
       conversations,
       generateUserPrompt,
+      systemPrompt,
     },
     maxRequestTimeoutMs: 30000,
   };
