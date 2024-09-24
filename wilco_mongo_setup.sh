@@ -81,9 +81,6 @@ cleaned_connection_string=""
 echo "┌─────────────────── Wilco MongoDB Details ────────────────────────────────────────────────────┐"
 echo "| Your Wilco MongoDB Atlas Cluster is being created.                                           |"
 echo "| This may take a few minutes. Once done you'll see your details below                         |"
-echo "| Wilco DB User: WilcoDbUser                                                                   |"
-echo "| Wilco DB Password: Wilco12345678                                                             |"
-echo "| Your cluster name: WilcoMongo"
 sleep 5
 full_connection_string=$(atlas clusters connectionStrings describe WilcoMongo --projectId $project_id | grep -A 1 "mongodb+srv" | tail -n 1)
 if [ $? -ne 0 ]; then
@@ -94,6 +91,16 @@ fi
 cleaned_connection_string=${full_connection_string#mongodb+srv://}
 
 connection_string="mongodb+srv://WilcoDbUser:Wilco12345678@$cleaned_connection_string"
+
+# Add connection string to the chat server app
+cat <<EOF > backend/.env
+VECTOR_SEARCH_INDEX_NAME=vector_index
+MONGODB_DATABASE_NAME=movies_quest
+MONGODB_CONNECTION_URI=$connection_string
+EOF
+
+# Restart the backend service to apply the new connection string
+docker compose restart anythink-backend-node
 
 echo "| Your connection string: >> $connection_string "
 echo "| Copy the connection string above from mongodb+srv and paste it in the chat                   |"
