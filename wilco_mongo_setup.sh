@@ -1,11 +1,11 @@
 #!/bin/bash
 
 echo "Wilco: Hi, Welcome to Wilco MongoDB Atlas Cluster Setup!"
-echo "We'll guide you through the process of setting up a MongoDB Atlas cluster."
-
+echo "Wilco: We'll guide you through the process of setting up a MongoDB Atlas cluster."
 # Step 1: Register or authenticate the user
 echo "Wilco: Please register or authenticate using MongoDB Atlas."
-echo "Wilco: If you already have an account, please click login and paste your CLI Key."
+echo "Wilco: (If you already have an account, please click login on the MongoDB registeration screen and paste your CLI Key)"
+echo "Wilco: Click CMD/CTRL + link to open it (or copy paste it) and click Open on the notification"
 atlas auth register --noBrowser
 if [ $? -ne 0 ]; then
     echo "Wilco: Something went wrong with atlas command 'auth register', please contact Wilco support."
@@ -57,7 +57,7 @@ if [ $? -ne 0 ]; then
 fi
 
 # Step 5: Create a cluster in the newly created project
-echo "Wilco: Creating a MongoDB cluster in the project 'WilcoMongo' for your Wilco application."
+echo "Wilco: Creating a MongoDB cluster in the project 'WilcoMongo' for your Wilco application (This might take a few min, dont close anything, once done you'll see your cluster details)"
 atlas cluster create WilcoMongo --projectId $project_id --provider AWS --region US_EAST_1 --tier M0 --watch
 if [ $? -ne 0 ]; then
     echo "Wilco: Something went wrong with atlas command 'cluster create'. Please contact Wilco support."
@@ -81,9 +81,6 @@ cleaned_connection_string=""
 echo "┌─────────────────── Wilco MongoDB Details ────────────────────────────────────────────────────┐"
 echo "| Your Wilco MongoDB Atlas Cluster is being created.                                           |"
 echo "| This may take a few minutes. Once done you'll see your details below                         |"
-echo "| Wilco DB User: WilcoDbUser                                                                   |"
-echo "| Wilco DB Password: Wilco12345678                                                             |"
-echo "| Your cluster name: WilcoMongo"
 sleep 5
 full_connection_string=$(atlas clusters connectionStrings describe WilcoMongo --projectId $project_id | grep -A 1 "mongodb+srv" | tail -n 1)
 if [ $? -ne 0 ]; then
@@ -95,5 +92,16 @@ cleaned_connection_string=${full_connection_string#mongodb+srv://}
 
 connection_string="mongodb+srv://WilcoDbUser:Wilco12345678@$cleaned_connection_string"
 
-echo "| Your connection string: $connection_string |"
+# Add connection string to the chat server app
+cat <<EOF > backend/.env
+VECTOR_SEARCH_INDEX_NAME=vector_index
+MONGODB_DATABASE_NAME=movies_quest
+MONGODB_CONNECTION_URI=$connection_string
+EOF
+
+# Restart the backend service to apply the new connection string
+docker compose restart anythink-backend-node
+
+echo "| Your connection string: >> $connection_string "
+echo "| Copy the connection string above from mongodb+srv and paste it in the chat                   |"
 echo "└─────────────────── Wilco MongoDB Details ────────────────────────────────────────────────────┘"
