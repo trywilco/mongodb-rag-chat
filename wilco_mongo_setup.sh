@@ -99,8 +99,8 @@ MONGODB_DATABASE_NAME=movies_quest
 MONGODB_CONNECTION_URI=$connection_string
 EOF
 
-# Restart the backend service to apply the new connection string
-docker compose restart anythink-backend-node
+# Restart the services to apply the new connection string
+docker compose restart
 
 echo "| Your connection string: >> $connection_string "
 echo "| Copy the connection string above from mongodb+srv and paste it in the chat                   |"
