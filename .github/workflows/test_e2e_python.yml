@@ -7,7 +7,7 @@ jobs:
   ci-checks:
     name: Pr checks
     runs-on: ubuntu-latest
-    timeout-minutes: 6
+    timeout-minutes: 8
 
     services:
       postgres:
@@ -61,7 +61,7 @@ jobs:
       - run: yarn install
         working-directory: tests/e2e/
 
-      - run: yarn wait-on -v http-get://0.0.0.0:3000/health --timeout 5000
+      - run: yarn wait-on -v http-get://0.0.0.0:3000/health --timeout 30000
         working-directory: tests/e2e/
 
       - run: yarn test
