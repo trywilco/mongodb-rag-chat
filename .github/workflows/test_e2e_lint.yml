@@ -6,18 +6,18 @@ on:
 jobs:
   lint:
     name: Pr checks
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     timeout-minutes: 6
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: ${{ github.head_ref }}
 
       - name: Run checks
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: "16"
+          node-version: "22"
           cache: "yarn"
           cache-dependency-path: tests/e2e/
 

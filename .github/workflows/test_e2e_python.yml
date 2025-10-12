@@ -6,8 +6,8 @@ on:
 jobs:
   ci-checks:
     name: Pr checks
-    runs-on: ubuntu-20.04
-    timeout-minutes: 6
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
 
     services:
       postgres:
@@ -25,7 +25,7 @@ jobs:
           --health-retries 5
     steps:
       - name: Check out project
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Use Python
         uses: actions/setup-python@v4
@@ -52,16 +52,16 @@ jobs:
         working-directory: .framework/python/backend
 
       - name: Run checks
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: "16"
+          node-version: "22"
           cache: "yarn"
           cache-dependency-path: tests/e2e/yarn.lock
 
       - run: yarn install
         working-directory: tests/e2e/
 
-      - run: yarn wait-on -v http-get://0.0.0.0:3000/health --timeout 5000
+      - run: yarn wait-on -v http-get://0.0.0.0:3000/health --timeout 30000
         working-directory: tests/e2e/
 
       - run: yarn test
